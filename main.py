@@ -41,6 +41,21 @@ jump_cieling = 100
 falling =False
 player_gravity = 0
 
+# move = 0
+# current_time = 0
+# skip_time = 0
+
+# def animation(image1,image2,x,y,speed):
+#     global current_time,skip_time
+#     if current_time - skip_time < speed:
+#         screen.blit(image1,(x,y))
+#     elif current_time - skip_time < speed*2 :
+#         screen.blit(image2,(x,y))
+#     else:
+#         screen.blit(image2,(x,y))
+#         skip_time = pygame.time.get_ticks()
+#     current_time = pygame.time.get_ticks()
+
 while True:
     for event in pygame.event.get():  # event loop -- check all event happening
         if event.type == pygame.QUIT:
