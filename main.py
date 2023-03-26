@@ -93,6 +93,13 @@ while True:
     # if player_rect.collidepoint(mouse_pos):
     #     print("mouse")
     
+    # move += 0.5
+    # snail_x = screen_width-move
+    # if snail_x < -100:
+    #     move = 0
+
+    # animation(snail_surface1,snail_surface2,snail_x,250,200)
+    # animation(fly_surface1,fly_surface2,snail_x,100,200)
     
 
     pygame.display.update()
