@@ -1,59 +1,99 @@
 import pygame
-from sys import exit #--- sys provide excess to different system command
+from sys import exit  # --- sys provide excess to different system command
 
-pygame.init()  #----- like starting car with keys
+pygame.init()  # ----- like starting car with keys
 screen_width = 800
 screen_height = 400
-screen = pygame.display.set_mode((screen_width,screen_height)) #---- playing surface
-pygame.display.set_caption("runner") #---- tittle name
-clock = pygame.time.Clock() # ----- time in game important to make it speed on differnt operating system same 
+screen = pygame.display.set_mode(
+    (screen_width, screen_height))  # ---- playing surface
+pygame.display.set_caption("runner")  # ---- tittle name
+# ----- time in game important to make it speed on differnt operating system same
+clock = pygame.time.Clock()
 
+# convert_alpha conver the image to something that python can eassly work with -- makse code fast
 
+#font load
+font = pygame.font.Font(None,35)
 
-sky_surface = pygame.image.load("graphics/Sky.png")
-land_surface = pygame.image.load("graphics/ground.png")
-snail_surface1 = pygame.image.load("graphics/snail/snail1.png")
-snail_surface2 = pygame.image.load("graphics/snail/snail2.png")
+#image load
+sky_surface = pygame.image.load("graphics/Sky.png").convert_alpha()
+land_surface = pygame.image.load("graphics/ground.png").convert_alpha()
+snail_surface1 = pygame.image.load("graphics/snail/snail1.png").convert_alpha()
+snail_surface2 = pygame.image.load("graphics/snail/snail2.png").convert_alpha()
 
-fly_surface1 = pygame.image.load("graphics/fly/fly1.png")
+player_surface = pygame.image.load("graphics/Player/player_walk_1.png").convert_alpha()
 
-fly_surface1 = pygame.image.load("graphics/Fly/Fly1.png")
-fly_surface2 = pygame.image.load("graphics/Fly/Fly2.png")
-move = 0
-current_time = 0
-skip_time = 0
+fly_surface1 = pygame.image.load("graphics/Fly/Fly1.png").convert_alpha()
+fly_surface2 = pygame.image.load("graphics/Fly/Fly2.png").convert_alpha()
 
-def animation(image1,image2,x,y,speed):
-    global current_time,skip_time
-    if current_time - skip_time < speed:
-        screen.blit(image1,(x,y))
-    elif current_time - skip_time < speed*2 :
-        screen.blit(image2,(x,y))
-    else:
-        screen.blit(image2,(x,y))
-        skip_time = pygame.time.get_ticks()
-    current_time = pygame.time.get_ticks()
+score_surface = font.render('My Game',False,"Black")
 
+#rectangle
+player_rect = player_surface.get_rect(midbottom=(80,300))
+snail_rect = snail_surface1.get_rect(midbottom = (screen_width,300))
+score_rect = score_surface.get_rect(center = (400,50))
 
-while True: 
-    for event in pygame.event.get():  #event loop -- check all event happening 
+#variables
+snail_x_pos = screen_width
+jump = False
+jump_floor = 300
+jump_cieling = 100
+falling =False
+player_gravity = 0
+
+while True:
+    for event in pygame.event.get():  # event loop -- check all event happening
         if event.type == pygame.QUIT:
-            pygame.quit() #---- close the pygame window but the loop is still runing --- error video system not initialized
-            exit() #---- while loop also end remmoving the error
-    # draw all our elements
-    # update everthing
-    screen.blit(sky_surface,(0,0))
-    screen.blit(land_surface,(0,300))
-    move += 0.5
-    snail_x = screen_width-move
-    if snail_x < -100:
-        move = 0
+            pygame.quit()  # ---- close the pygame window but the loop is still runing --- error video system not initialized
+            exit()  # ---- while loop also end remmoving the error
 
-    animation(snail_surface1,snail_surface2,snail_x,250,200)
-    animation(fly_surface1,fly_surface2,snail_x,100,200)
+    #     if event.type == pygame.MOUSEMOTION:
+    #         if player_rect.collidepoint(event.pos):
+    #             print("mouse collision")
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                
+                jump = True
+                # falling = False
+                player_gravity = 0
+
+    # # draw all our elements
+    # update everthing
+
+    screen.blit(sky_surface, (0, 0))
+    screen.blit(land_surface, (0, 300))
+    screen.blit(snail_surface1,snail_rect)
+    pygame.draw.rect(screen,"Pink",score_rect)
+    pygame.draw.rect(screen,"Pink",score_rect,50)
+    screen.blit(score_surface,score_rect)
+    
+    snail_rect.left -= 4
+    if snail_rect.right <=0: snail_rect.left = screen_width
+
+    #player
+    player_gravity += 0.2
+    if jump:
+        player_rect.top -= player_gravity
+        if player_rect.top <= jump_cieling:
+            falling = True
+            jump =False
+    if falling:
+        player_rect.bottom += player_gravity
+        if player_rect.bottom >= jump_floor:
+            falling = False
+    
+    screen.blit(player_surface,player_rect)
+    
+    
+
+    # if player_rect.colliderect(snail_rect):
+    #     print("cls")
+
+    # mouse_pos = pygame.mouse.get_pos()
+    # if player_rect.collidepoint(mouse_pos):
+    #     print("mouse")
     
     
 
     pygame.display.update()
     clock.tick(60)
-
